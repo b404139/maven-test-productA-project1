@@ -1,0 +1,144 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>cn.bigg</groupId>
+	<artifactId>maven-test-productA-project1</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>maven-test-productA-project1 Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project>
+			liby
+		</project>
+		<bigg>郭巨侠_A1</bigg>
+		<maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>cn.bigg</groupId>
+			<artifactId>maven-test-productA-base-jar</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cn.bigg</groupId>
+			<artifactId>maven-test-productA-base-web</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>cn.bigg</groupId>
+			<artifactId>maven-test-productA-base-web</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<classifier>classes</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.8.5</version>
+		</dependency>
+
+	</dependencies>
+
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>src/main/resources/deploy/dev.properties</filter>
+				</filters>
+			</build>
+		</profile>
+		<profile>
+			<id>test</id>
+			<build>
+				<filters>
+					<filter>src/main/resources/deploy/test.properties</filter>
+				</filters>
+			</build>
+		</profile>
+		<profile>
+			<id>product</id>
+			<build>
+				<filters>
+					<filter>src/main/resources/deploy/product.properties</filter>
+				</filters>
+			</build>
+		</profile>
+	</profiles>
+
+	<build>
+		<finalName>maven-test-productA-project1</finalName>
+		<filters>
+			<filter>src/main/resources/config/filters-A1.properties</filter>
+		</filters>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<warName>maven-test-productA-project1__${maven.build.timestamp}</warName>
+					<!-- <archiveClasses>false</archiveClasses>打包class路径，生成jar，放到lib下，war包的class为空 
+						<attachClasses>true</attachClasses>同时打出war包，jar包 -->
+					<dependentWarExcludes>WEB-INF/lib/*,/META-INF/*</dependentWarExcludes>
+					<webResources>
+						<resource>
+							<directory>src/main/resources/projectPage/${project}</directory>
+							<targetPath>WEB-INF/src/main/resources/projectPage/${project}</targetPath>
+							<filtering>true</filtering>
+						</resource>
+						<resource>
+							<directory>src/main/webapp/commons</directory>
+							<targetPath>commons</targetPath>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+					<overlays>
+						<overlay>
+							<groupId>cn.bigg</groupId>
+							<artifactId>maven-test-productA-base-web</artifactId>
+							<includes>
+								<include>**/*.woff</include>
+								<include>**/*.ttf</include>
+							</includes>
+							<filtered>false</filtered>
+						</overlay>
+						<overlay>
+							<groupId>cn.bigg</groupId>
+							<artifactId>maven-test-productA-base-web</artifactId>
+							<includes>
+								<!-- 反选其他文件 -->
+								<include>%regex[.*(?!woff)]</include>
+								<include>%regex[.*(?!ttf)]</include>
+							</includes>
+							<excludes>
+								<!-- 排除lib -->
+								<exclude>WEB-INF/lib/*</exclude>
+							</excludes>
+							<filtered>true</filtered>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
